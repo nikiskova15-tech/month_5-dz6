@@ -1,8 +1,7 @@
 import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
+    useMutation,
+    useQuery,
+    useQueryClient,
 } from "@tanstack/react-query";
 import { useState } from "react";
 import { createProduct, getProducts } from "../api/products";
@@ -11,39 +10,41 @@ import { createProduct, getProducts } from "../api/products";
 export function AddProductForm() {
 
     const queryClient = useQueryClient();
-    const [title, setTitle] = useState('')
-    const [price, setPrice] = useState('')
+    const [title, setTitle] = useState("")
+    const [price, setPrice] = useState("")
 
-    const { mutate, isPending, isError, error } = useMutation({
+    const { data: products = [], isLoading, error: queryError, } = useQuery({
+        queryKey: ["products"],
+        queryFn: getProducts,
+    });
+
+    const { mutate, isPending, isError, error: mutationError, } = useMutation({
         mutationFn: createProduct,
         onSuccess: () => {
-            setTitle('')
-            setPrice('')
-            alert('успешно создан продукт')
-        }
-    })
+            setTitle("")
+            setPrice("")
+            queryClient.invalidateQueries({ queryKey: ["products"] }); //?
+        },
+    });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        mutate({ title, price: Number(price), category: 'phones', rating: 0 })
-    }
+        mutate({ title: title.trim(), price: Number(price), category: "phones", rating: 0, })
+    };
 
-    const { data = [] } = useQuery({
-        queryKey: ['products'],
-        queryFn: () => getProducts(),
-        placeholderData: keepPreviousData
-    })
+    if (isLoading) return <p>Загрузка товаров...</p>;
+    if (queryError) return <p>Ошибка загрузки: {queryError.message}</p>;
 
     return (
         <form onSubmit={handleSubmit}>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Название" />
-            <input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Цена" type="number" />
-            <button disabled={isPending}>{isPending ? 'Сохраняем...' : 'Добавить'}</button>
-            {isError && <p>Ошибка: {error.message}</p>}
+            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Название" required />
+            <input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Цена" type="number" min="0" required />
+            <button type="submit" disabled={isPending}>{isPending ? "Сохраняем..." : "Добавить"}</button>
+            {isError && <p>Ошибка добавления: {mutationError.message}</p>}
 
             <ul>
-                {(data ?? []).map((p) => (
-                    <li key={p.id}>{p.title} - {p.price} {p.rating}</li>
+                {products.map((product) => (
+                    <li key={product.id}>{product.title} — {product.price} — рейтинг: {product.rating}</li>
                 ))}
             </ul>
         </form>
