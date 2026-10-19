@@ -1,4 +1,4 @@
- import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { getProducts } from "../api/products"
 import { useSearchParams } from "react-router-dom"
 
