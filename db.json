@@ -1,0 +1,30 @@
+{
+    "products": [{
+        "id": 1,
+        "title": "Iphon 15",
+        "category": "phones",
+        "price": 999,
+        "rating": 4.8
+    },
+    {
+        "id": 2,
+        "title": "Galaxy S24",
+        "category": "phones",
+        "price": 899,
+        "rating": 4.6
+    },
+    {
+        "id": 3,
+        "title": "Macbook Air",
+        "category": "laptop",
+        "price": 1199,
+        "rating": 4.9
+    },
+    {
+        "id": 4,
+        "title": "Galaxy S24",
+        "category": "audio",
+        "price": 249,
+        "rating": 4.7
+    }]
+}
