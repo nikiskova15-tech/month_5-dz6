@@ -28,42 +28,44 @@ export default function ProductsPage() {
 
     if (isLoading) return <p>Загрузка...</p>
     if (error) return <p>Ошибка: {error.message}</p>
-    
-    return ( 
-            <div>
-                <input
-                    placeholder="Поиск"
-                />
 
-                <select value={filters.category} onChange={(e) => updateFiltesrs('category', e.target.value)}>
-                    <option value=''>Все</option>
-                    <option value='phones'>Телефоны</option>
-                    <option value="laptops">Ноутбуки</option>
-                    <option value='audio'>Аудио</option>
-                </select>
+    return (
+        <div>
+            <input
+                placeholder="Поиск"
+                value={filters.q}
+                onChange={(e) => updateFiltesrs('q', e.target.value)}
+            />
 
-                <select 
-                    value={`${filters.sort}-${filters.order}`}
-                    onChange={(e) => {
-                        const [sort, order] = e.target.value.split('-');
-                        const next = new URLSearchParams(searchParams)
-                        next.set('sort', sort)
-                        next.set('order', order)
-                        setSearchParams(next)
-                    }}
-                >
-                    <option value='price-asc'>Сначала дешевые</option>
-                    <option value='price-desc'>Сначала дорогие</option>
-                    <option value='rating-asc'>По рейтингу</option>
-                </select>
+            <select value={filters.category} onChange={(e) => updateFiltesrs('category', e.target.value)}>
+                <option value=''>Все</option>
+                <option value='phones'>Телефоны</option>
+                <option value="laptops">Ноутбуки</option>
+                <option value='audio'>Аудио</option>
+            </select>
 
-                {isFetching && <small>Обновляем...</small>}
+            <select
+                value={`${filters.sort}-${filters.order}`}
+                onChange={(e) => {
+                    const [sort, order] = e.target.value.split('-');
+                    const next = new URLSearchParams(searchParams)
+                    next.set('sort', sort)
+                    next.set('order', order)
+                    setSearchParams(next)
+                }}
+            >
+                <option value='price-asc'>Сначала дешевые</option>
+                <option value='price-desc'>Сначала дорогие</option>
+                <option value='rating-asc'>По рейтингу</option>
+            </select>
 
-                <ul>
-                    {data.map((p) => (
-                        <li key={p.id}>{p.title} - {p.price} {p.rating}</li>
-                    ))}
-                </ul>
-            </div>
-        )
+            {isFetching && <small>Обновляем...</small>}
+
+            <ul>
+                {data.map((p) => (
+                    <li key={p.id}>{p.title} - {p.price} {p.rating}</li>
+                ))}
+            </ul>
+        </div>
+    )
 }
